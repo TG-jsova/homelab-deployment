@@ -1,1 +1,1 @@
-# home-lab-deployment
+# homelab-deployment

@@ -1,0 +1,12 @@
+.venv/
+.DS_Store
+*.hcl
+*.tfvars
+*.tfplan
+*.tfstate
+*.tfstate.backup
+*.tfvars.json
+*.tfvars.json.backup
+*.tfvars.json.backup.2
+*.tfvars.json.backup.3
+*.tfvars.json.backup.4

@@ -4,12 +4,12 @@ This repository contains Terraform configurations for deploying Windows Server 2
 
 ## Overview
 
-The deployment creates two Windows Server 2022 VMs with the following specifications:
-- VM Names: CORP4141-verge01 and CORP414-verge02
+The deployment creates three Windows Server 2022 VMs with the following specifications:
+- VM Names: WIN-VERGE01, WIN-VERGE02, and WIN-VERGE03
 - CPU: 4 cores each
 - Memory: 8GB RAM each
-- Storage: 100GB disk each
-- Network: Connected to External network with DHCP
+- Storage: Cloned from Windows-Server-2022-Template
+- Network: Connected to External network with virtio interface
 
 ## Prerequisites
 
@@ -21,7 +21,6 @@ The deployment creates two Windows Server 2022 VMs with the following specificat
 
 - `providers.tf`: Contains the VergeIO provider configuration
 - `main.tf`: Main Terraform configuration for VM deployment
-- `variables.tf`: Variable definitions for the deployment
 
 ## Usage
 
@@ -49,16 +48,17 @@ terraform apply
 - Secure Boot: Enabled
 - UEFI: Enabled
 - Guest Agent: Enabled
+- Cloud-init Datasource: nocloud
 
 ### Network Configuration
 - Network: External
 - Interface: virtio
-- DHCP: Enabled
+- DHCP: Enabled (via External network)
 
 ### Storage Configuration
 - Interface: virtio-scsi
 - Storage Tier: 1
-- Media Type: Clone from template
+- Media Type: Clone from Windows-Server-2022-Template
 
 ## Maintenance
 
@@ -71,4 +71,5 @@ terraform destroy
 
 - The deployment uses the Windows-Server-2022-Template as the base image
 - VMs are configured to use cloud-init for initial configuration
-- Network configuration is set to use DHCP for automatic IP assignment
+- Network configuration is set to use the External network
+- All VMs have identical hardware specifications (4 cores, 8GB RAM)

@@ -1,0 +1,47 @@
+#cloud-config
+# hostname: ${vm_name}
+enable_automatic_updates: False
+groups:
+  - cloud-users:  [Administrator]
+  - windows-group: [local]
+users:
+  - name: Administrator
+    passwd: ${vm_password}
+    inactive: False 
+  - name: User
+    passwd: ${vm_password}
+    inactive: False 
+write_files:
+  - path: c:\cloudbase-init\first-setup.ps1
+    content: |
+      Start-Transcript -Path "C:\cloudbase-init\first-setup.txt"
+      netsh advfirewall set allprofiles state off
+      # Set-NetConnectionProfile -Name Network -NetworkCategory Private
+      $ethernet = Get-NetAdapter
+      New-NetIPAddress -InterfaceAlias $ethernet.name -IPAddress ${static_ip} -PrefixLength 24 -DefaultGateway ${default_gateway}
+      Set-DnsClientServerAddress -InterfaceAlias $ethernet.name -ServerAddresses ${join("\n    - ", dns_servers)}
+      Stop-Transcript
+  - path: c:\cloudbase-init\join-domain.ps1
+    content: |
+      Start-Transcript -Path "C:\cloudbase-init\join-domain.txt"
+      try {
+        $DomainFQDN = "${domain}"
+        $DomainFQDNsplit = $DomainFQDN.Split(".")
+        $DomainName = $DomainFQDNsplit[0]
+        $Env = $DomainFQDNsplit[1]
+        $DomainSecurePwd = ConvertTo-SecureString '${domain_password}' -AsPlainText -Force
+        $DomainUsername = '${domain_user}'
+        $DomainCredentials = New-Object System.Management.Automation.PSCredential $DomainUsername,$DomainSecurePwd 
+        Write-Output "Add_server_to_Domain: Adding Computer to the domain $DomainFQDN"
+        Add-Computer -domain $DomainFQDN -Credential $DomainCredentials -NewName ${vm_name}
+      } catch {
+        Write-Error "Add_server_to_Domain: $_"
+        Exit
+      }
+      Write-Output "Add_server_to_Domain: Computer added to the domain $DomainFQDN"
+      Stop-Transcript
+runcmd:
+  - 'powershell.exe Start-Sleep -Seconds 60'
+  - 'powershell.exe c:\cloudbase-init\first-setup.ps1'
+  - 'powershell.exe sleep 30'
+  - 'powershell.exe c:\cloudbase-init\join-domain.ps1'

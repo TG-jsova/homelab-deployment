@@ -10,3 +10,4 @@
 *.tfvars.json.backup.2
 *.tfvars.json.backup.3
 *.tfvars.json.backup.4
+.terraform/

@@ -52,9 +52,9 @@ resource "vergeio_vm" "windows_servers" {
 			static_ip 		= each.value.ip_address,
 			default_gateway = "192.168.0.1",
 			dns_servers     = ["192.168.0.29"],
-			domain_user		= "SOVASOLUTIONS\\jsova",
-			vm_password 	= "DeepRiver4428!!",
-			domain_password = "DeepRiver4428!!"
+			domain_user		= "",
+			vm_password 	= "",
+			domain_password = ""
 		})
 		},
 		{

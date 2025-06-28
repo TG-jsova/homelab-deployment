@@ -8,7 +8,7 @@ terraform {
 
 provider "vergeio" {
   host     = "verge.sovasolutions.us"
-  username = ""
+  username = "admin"
   password = ""
   insecure = true  # Required for self-signed certificates
 } 
